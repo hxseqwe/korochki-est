@@ -77,6 +77,18 @@ func (r *ApplicationRepository) UpdateStatus(id int, status string) error {
 	return err
 }
 
+func (r *ApplicationRepository) UpdateApplication(id int, courseName string, startDate string, paymentMethod string) error {
+	query := `UPDATE applications SET course_name = $1, start_date = $2, payment_method = $3, updated_at = CURRENT_TIMESTAMP WHERE id = $4`
+	_, err := r.db.Exec(query, courseName, startDate, paymentMethod, id)
+	return err
+}
+
+func (r *ApplicationRepository) DeleteApplication(id int) error {
+	query := `DELETE FROM applications WHERE id = $1`
+	_, err := r.db.Exec(query, id)
+	return err
+}
+
 func (r *ApplicationRepository) AddReview(id int, review string) error {
 	query := `UPDATE applications SET review = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2`
 	_, err := r.db.Exec(query, review, id)

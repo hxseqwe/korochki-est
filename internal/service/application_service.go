@@ -67,6 +67,22 @@ func (s *ApplicationService) UpdateStatus(appID int, status string) error {
 	return s.appRepo.UpdateStatus(appID, status)
 }
 
+func (s *ApplicationService) UpdateApplication(appID int, req *model.ApplicationRequest) error {
+	if req.CourseName == "" {
+		return errors.New("course name is required")
+	}
+
+	if req.PaymentMethod != "cash" && req.PaymentMethod != "transfer" {
+		return errors.New("invalid payment method")
+	}
+
+	return s.appRepo.UpdateApplication(appID, req.CourseName, req.StartDate, req.PaymentMethod)
+}
+
+func (s *ApplicationService) DeleteApplication(appID int) error {
+	return s.appRepo.DeleteApplication(appID)
+}
+
 func (s *ApplicationService) AddReview(appID int, review string) error {
 	if review == "" {
 		return errors.New("review cannot be empty")

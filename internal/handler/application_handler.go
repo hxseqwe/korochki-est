@@ -97,6 +97,44 @@ func (h *ApplicationHandler) UpdateStatus(w http.ResponseWriter, r *http.Request
 	w.WriteHeader(http.StatusOK)
 }
 
+func (h *ApplicationHandler) UpdateApplication(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	appID, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, "Invalid application ID", http.StatusBadRequest)
+		return
+	}
+
+	var req model.ApplicationRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	if err := h.appService.UpdateApplication(appID, &req); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h *ApplicationHandler) DeleteApplication(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	appID, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, "Invalid application ID", http.StatusBadRequest)
+		return
+	}
+
+	if err := h.appService.DeleteApplication(appID); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
 func (h *ApplicationHandler) AddReview(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	appID, err := strconv.Atoi(vars["id"])

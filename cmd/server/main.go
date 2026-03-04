@@ -68,6 +68,8 @@ func main() {
 	admin.Use(authHandler.AdminMiddleware)
 	admin.HandleFunc("/applications", appHandler.GetAllApplications).Methods("GET")
 	admin.HandleFunc("/applications/{id}/status", appHandler.UpdateStatus).Methods("POST")
+	admin.HandleFunc("/applications/{id}", appHandler.UpdateApplication).Methods("PUT")
+	admin.HandleFunc("/applications/{id}", appHandler.DeleteApplication).Methods("DELETE")
 
 	staticDir := "./frontend/build"
 	if _, err := os.Stat(staticDir); err == nil {

@@ -13,8 +13,26 @@ function NewApplication() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const validateDate = (dateString) => {
+    const selectedDate = new Date(dateString);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    oneYearAgo.setHours(0, 0, 0, 0);
+    
+    return selectedDate >= oneYearAgo;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!validateDate(form.start_date)) {
+      setError('Дата начала не может быть более 1 года в прошлом');
+      return;
+    }
+
     setLoading(true);
     setError('');
 
@@ -33,15 +51,25 @@ function NewApplication() {
     navigate('/login');
   };
 
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  let user = { fullName: '', login: '' };
+  try {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      user = JSON.parse(userStr);
+    }
+  } catch (e) {}
+
   const today = new Date().toISOString().split('T')[0];
+  const minDate = new Date();
+  minDate.setFullYear(minDate.getFullYear() - 1);
+  const minDateStr = minDate.toISOString().split('T')[0];
 
   return (
     <div className="container">
       <header>
         <div>
           <h1>Корочки.есть</h1>
-          <p className="welcome-message">Добро пожаловать, {user.fullName || user.login}!</p>
+          <p className="welcome-message">Добро пожаловать, {user.fullName || user.login || 'пользователь'}!</p>
         </div>
         <div className="user-info">
           <button onClick={handleLogout} className="btn-link">Выйти</button>
@@ -75,9 +103,10 @@ function NewApplication() {
               type="date"
               value={form.start_date}
               onChange={(e) => setForm({...form, start_date: e.target.value})}
-              min={today}
+              min={minDateStr}
               required
             />
+            <small className="input-hint">Можно указать дату не более 1 года в прошлом</small>
           </div>
           
           <div className="form-group">

@@ -66,6 +66,18 @@ func validateRegisterRequest(req *model.RegisterRequest) error {
 	if len(req.Password) < 8 {
 		return httpError("Пароль должен содержать минимум 8 символов")
 	}
+	if matched, _ := regexp.MatchString("[A-Z]", req.Password); !matched {
+		return httpError("Пароль должен содержать хотя бы одну заглавную букву")
+	}
+	if matched, _ := regexp.MatchString("[a-z]", req.Password); !matched {
+		return httpError("Пароль должен содержать хотя бы одну строчную букву")
+	}
+	if matched, _ := regexp.MatchString("[0-9]", req.Password); !matched {
+		return httpError("Пароль должен содержать хотя бы одну цифру")
+	}
+	if matched, _ := regexp.MatchString("[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]", req.Password); !matched {
+		return httpError("Пароль должен содержать хотя бы один специальный символ")
+	}
 
 	if req.FullName == "" {
 		return httpError("ФИО обязательно для заполнения")

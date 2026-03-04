@@ -25,3 +25,11 @@
   width: auto;
   margin: 0;
 }
+
+.input-hint {
+  display: block;
+  color: #718096;
+  font-size: 12px;
+  margin-top: 5px;
+  padding-left: 5px;
+}

@@ -31,6 +31,14 @@ function Register() {
       newErrors.password = 'Пароль обязателен';
     } else if (form.password.length < 8) {
       newErrors.password = 'Пароль должен содержать минимум 8 символов';
+    } else if (!/[A-Z]/.test(form.password)) {
+      newErrors.password = 'Пароль должен содержать хотя бы одну заглавную букву';
+    } else if (!/[a-z]/.test(form.password)) {
+      newErrors.password = 'Пароль должен содержать хотя бы одну строчную букву';
+    } else if (!/[0-9]/.test(form.password)) {
+      newErrors.password = 'Пароль должен содержать хотя бы одну цифру';
+    } else if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(form.password)) {
+      newErrors.password = 'Пароль должен содержать хотя бы один специальный символ';
     }
 
     if (!form.full_name) {
@@ -145,7 +153,7 @@ function Register() {
           </div>
           
           <div className="form-group">
-            <label>Пароль (минимум 8 символов)</label>
+            <label>Пароль (мин. 8 символов, заглавная, строчная, цифра, спецсимвол)</label>
             <input
               type="password"
               name="password"
